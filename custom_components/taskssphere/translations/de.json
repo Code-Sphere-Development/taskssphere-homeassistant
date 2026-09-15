@@ -1,0 +1,49 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "TasksSphere verbinden",
+        "description": "Den Token erzeugst du in TasksSphere unter Profil, API-Token.",
+        "data": {
+          "base_url": "Adresse",
+          "token": "Token"
+        },
+        "data_description": {
+          "base_url": "Zum Beispiel https://tasks.example.org",
+          "token": "Wird gespeichert, das Passwort wird nicht benötigt."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Der Server war nicht erreichbar.",
+      "invalid_auth": "Der Token wurde abgelehnt.",
+      "invalid_url": "Die Adresse muss mit http:// oder https:// beginnen."
+    },
+    "abort": {
+      "already_configured": "Dieses Konto ist bereits eingerichtet."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Abrufintervall",
+        "data": {
+          "scan_interval_minutes": "Alle wie viele Minuten abrufen?"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "overdue": { "name": "Überfällig" },
+      "due_today": { "name": "Heute fällig" },
+      "completed_today": { "name": "Heute erledigt" }
+    },
+    "todo": {
+      "tasks": { "name": "Aufgaben" }
+    },
+    "calendar": {
+      "occurrences": { "name": "Termine" }
+    }
+  }
+}

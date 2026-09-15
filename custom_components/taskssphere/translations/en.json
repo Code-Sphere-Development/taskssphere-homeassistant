@@ -1,0 +1,59 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect TasksSphere",
+        "description": "Create the token in TasksSphere under Profile, API tokens.",
+        "data": {
+          "base_url": "Address",
+          "token": "Token"
+        },
+        "data_description": {
+          "base_url": "For example https://tasks.example.org",
+          "token": "Stored as is; your password is not needed."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "The server could not be reached.",
+      "invalid_auth": "The token was rejected.",
+      "invalid_url": "The address must start with http:// or https://."
+    },
+    "abort": {
+      "already_configured": "This account is already set up."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Polling interval",
+        "data": {
+          "scan_interval_minutes": "Fetch every how many minutes?"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "overdue": {
+        "name": "Overdue"
+      },
+      "due_today": {
+        "name": "Due today"
+      },
+      "completed_today": {
+        "name": "Completed today"
+      }
+    },
+    "todo": {
+      "tasks": {
+        "name": "Tasks"
+      }
+    },
+    "calendar": {
+      "occurrences": {
+        "name": "Occurrences"
+      }
+    }
+  }
+}
