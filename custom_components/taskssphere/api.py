@@ -7,6 +7,8 @@ und ohne Kenntnis von Home Assistant, damit sie sich einzeln testen laesst.
 from __future__ import annotations
 
 from datetime import datetime
+from json import JSONDecodeError
+from json import loads as json_loads
 from typing import Any
 
 import aiohttp
@@ -147,18 +149,30 @@ class TasksSphereClient:
                         f"Zugriff verweigert ({response.status})"
                     )
 
-                if response.status == 204 or not response.content_length:
-                    if response.status >= 400:
-                        raise TasksSphereConnectionError(
-                            f"Unerwartete Antwort {response.status}"
-                        )
-                    return None
-
                 if response.status >= 400:
                     raise TasksSphereConnectionError(
                         f"Unerwartete Antwort {response.status} von {url}"
                     )
 
-                return await response.json()
+                if response.status == 204:
+                    return None
+
+                # Bewusst ueber den Text und nicht ueber Content-Length: sobald
+                # der Server gzip oder stueckweise Uebertragung nutzt, fehlt die
+                # Laengenangabe. Wer daraus schliesst, der Koerper sei leer,
+                # wirft jede groessere Antwort weg.
+                body = await response.text()
+
+                if not body.strip():
+                    return None
+
+                try:
+                    # json_loads, nicht json.loads: der Parameter json verdeckt
+                    # das Modul innerhalb dieser Methode.
+                    return json_loads(body)
+                except JSONDecodeError as err:
+                    raise TasksSphereConnectionError(
+                        f"Antwort von {url} war kein JSON: {body[:200]}"
+                    ) from err
         except aiohttp.ClientError as err:
             raise TasksSphereConnectionError(str(err)) from err
