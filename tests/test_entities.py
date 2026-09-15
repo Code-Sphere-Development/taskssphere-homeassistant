@@ -2,13 +2,11 @@
 
 from __future__ import annotations
 
-from datetime import timedelta
 from unittest.mock import AsyncMock, patch
 
 import pytest
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant
-from homeassistant.util import dt as dt_util
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.taskssphere.const import CONF_BASE_URL, CONF_TOKEN, DOMAIN
@@ -34,14 +32,27 @@ def _task(task_id: int, title: str, due_at: str | None) -> dict:
     }
 
 
+# Feste Zeitpunkte statt "jetzt plus X": Die Fixture liefe sonst vor dem
+# Setzen der Zeitzone durch Home Assistant, schriebe die Zeitstempel also in
+# einer anderen Zone als sie spaeter gelesen werden - der Test haenge an der
+# Uhrzeit des Rechners.
+FROZEN_NOW = "2026-09-15 10:00:00"
+OVERDUE = "2026-09-14 09:00:00"
+LATER_TODAY = "2026-09-15 18:00:00"
+NEXT_WEEK = "2026-09-22 09:00:00"
+COMPLETED_AT = "2026-09-15 09:30:00"
+
+
+@pytest.fixture(autouse=True)
+def frozen_clock(freezer):
+    """Alle Zeitvergleiche gegen einen festen Zeitpunkt."""
+    freezer.move_to(FROZEN_NOW)
+    return freezer
+
+
 @pytest.fixture
 def api():
     """Ein Klient, der feste Daten liefert."""
-    now = dt_util.now()
-    overdue = (now - timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S")
-    later_today = (now + timedelta(minutes=30)).strftime("%Y-%m-%d %H:%M:%S")
-    next_week = (now + timedelta(days=7)).strftime("%Y-%m-%d %H:%M:%S")
-
     with patch(
         "custom_components.taskssphere.TasksSphereClient", autospec=True
     ) as client_class:
@@ -56,18 +67,18 @@ def api():
         client.async_get_task_list = AsyncMock(return_value=CHECKLIST)
         client.async_get_tasks = AsyncMock(
             return_value=[
-                _task(1, "Reifen wechseln", overdue),
-                _task(2, "Müll rausbringen", later_today),
-                _task(3, "Versicherung kündigen", next_week),
+                _task(1, "Reifen wechseln", OVERDUE),
+                _task(2, "Müll rausbringen", LATER_TODAY),
+                _task(3, "Versicherung kündigen", NEXT_WEEK),
             ]
         )
         client.async_get_completed = AsyncMock(
             return_value=[
                 {
                     "id": 90,
-                    "planned_at": overdue,
-                    "completed_at": now.strftime("%Y-%m-%d %H:%M:%S"),
-                    "task": _task(4, "Paket abholen", overdue),
+                    "planned_at": OVERDUE,
+                    "completed_at": COMPLETED_AT,
+                    "task": _task(4, "Paket abholen", OVERDUE),
                 }
             ]
         )
