@@ -9,7 +9,7 @@
           "token": "Token"
         },
         "data_description": {
-          "base_url": "Zum Beispiel https://tasks.example.org",
+          "base_url": "Zum Beispiel {example_url}",
           "token": "Wird gespeichert, das Passwort wird nicht benötigt."
         }
       }

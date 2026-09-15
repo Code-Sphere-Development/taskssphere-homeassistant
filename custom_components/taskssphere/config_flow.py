@@ -35,6 +35,12 @@ from .const import (
     MIN_SCAN_INTERVAL_MINUTES,
 )
 
+# Beispieladresse fuer das Formular. Steht hier statt in den Uebersetzungen,
+# weil hassfest keine URLs in strings.json erlaubt: Uebersetzer sollen keine
+# Adressen pflegen muessen, und eine Aenderung waere sonst in jeder Sprache
+# nachzuziehen.
+EXAMPLE_BASE_URL = "https://tasks.example.org"
+
 STEP_USER_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_BASE_URL): TextSelector(
@@ -86,7 +92,10 @@ class TasksSphereConfigFlow(ConfigFlow, domain=DOMAIN):
                     )
 
         return self.async_show_form(
-            step_id="user", data_schema=STEP_USER_SCHEMA, errors=errors
+            step_id="user",
+            data_schema=STEP_USER_SCHEMA,
+            errors=errors,
+            description_placeholders={"example_url": EXAMPLE_BASE_URL},
         )
 
     @staticmethod
