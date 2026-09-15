@@ -52,6 +52,10 @@ Diese Punkte sind keine Nachlässigkeit der Integration, sondern Eigenschaften d
 
 **Je Checkliste eine Anfrage.** Die Übersicht liefert die Einträge nicht mit, also holt der Koordinator jede Checkliste einzeln. Bei fünf Listen sind das sieben Anfragen je Zyklus. Im Haushalt unbedenklich, bei vielen Listen wäre ein Sammelendpunkt in TasksSphere die bessere Antwort.
 
+## Markenzeichen
+
+Icon und Bildmarke liegen unter `custom_components/taskssphere/brand/`. HACS sucht dort zuerst und weicht erst danach auf das Marken-Repository von Home Assistant aus, in dem TasksSphere nicht eingetragen ist.
+
 ## Voraussetzungen
 
 - Home Assistant 2025.2 oder neuer
